@@ -4,7 +4,6 @@
 '''
 # Student Data Structure
 students = {}
-
 def createDynamicDict():
 	global sortDict
 	sortDict = {}
