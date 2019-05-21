@@ -4,6 +4,7 @@
 '''
 # Student Data Structure
 students = {}
+
 def createDynamicDict():
 	global sortDict
 	sortDict = {}
@@ -89,6 +90,7 @@ if __name__ == '__main__':
 	# Execution starts from here.
 	while True:
 		choice = int(raw_input("1.Enroll 2.Sort"))
+		
 		if (choice == 1):
 			addStudent()
 		elif(choice == 2):
