@@ -1,28 +1,9 @@
 #include <PubSubClient.h>
-
-#include <BearSSLHelpers.h>
-#include <CertStoreBearSSL.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266WiFiAP.h>
-#include <ESP8266WiFiGeneric.h>
-#include <ESP8266WiFiMulti.h>
-#include <ESP8266WiFiScan.h>
-#include <ESP8266WiFiSTA.h>
-#include <ESP8266WiFiType.h>
-#include <WiFiClient.h>
-#include <WiFiClientSecure.h>
-#include <WiFiClientSecureAxTLS.h>
-#include <WiFiClientSecureBearSSL.h>
-#include <WiFiServer.h>
-#include <WiFiServerSecure.h>
-#include <WiFiServerSecureAxTLS.h>
-#include <WiFiServerSecureBearSSL.h>
-#include <WiFiUdp.h>
-
 
 // 2 - wifi variables definition
-char *ssid = "sandeep";
-char *password = "22122012";
+char *ssid = "*******";
+char *password = "********";
 
 // mqtt variables definition
 char *broker = "test.mosquitto.org"; 
