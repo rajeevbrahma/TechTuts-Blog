@@ -3,8 +3,8 @@
 
 
 // 2 - wifi variables definition
-char *ssid = "sandeep";
-char *password = "22122012";
+char *ssid = "*******";
+char *password = "******";
 
 // mqtt variables definition
 char *broker = "test.mosquitto.org";
