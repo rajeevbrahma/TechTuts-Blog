@@ -1,0 +1,45 @@
+sandeep
+---------Portnumber------------
+default-rpc-port = 4260                 # Default TCP/IP port for incoming JSON-RPC API requests.
+ 
+---------Username--------------
+rpcuser=multichainrpc
+ 
+---------Password--------------
+rpcpassword=Ay734NwkP9B3ro3vh2efjRZ2ce2kSN3k6n1ZHSAEfxZ9
+
+
+
+
+thub 
+
+---------Portnumber------------
+default-rpc-port = 4260                 # Default TCP/IP port for incoming JSON-RPC API requests.
+ 
+---------Username--------------
+rpcuser=multichainrpc
+ 
+---------Password--------------
+rpcpassword=7bQoa4hEWLoMYjfDPizdd1V22g3VURFeCx3q9i3ZnFyz
+
+
+rajeev
+
+---------Portnumber------------
+default-rpc-port = 4260                 # Default TCP/IP port for incoming JSON-RPC API requests.
+ 
+---------Username--------------
+rpcuser=multichainrpc
+ 
+---------Password--------------
+rpcpassword=J72KxUKa3LvXvVNkXeanoJTukfqJV93sG85EyQX5Ri37
+
+
+
+        USER_DATA = {
+                                "thub":{"walletAddress":"1RgWYNmQ1gkFqwcPSVhaFQmGrMZHLQ7mpqdy27","username":"thub","password":"123","mobile":"+919550119531"},
+                                "3892":{"walletAddress":"1K5Kur6Zf5XLWf96vXwc7SNWWE8wEYhKXtAXvJ","username":"3892","password":"123","mobile":"+919550119531"},
+                                "783":{"walletAddress":"1Q9xHw6DWAD8rw4rTQxgh6hDuRMf3abJuoqMq8","username":"783","password":"123","mobile":"+918985833200"},
+                                }
+
+

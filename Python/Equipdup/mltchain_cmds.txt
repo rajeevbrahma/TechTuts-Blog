@@ -1,0 +1,21 @@
+multichain-util create echain
+
+multichaind echain -daemon
+
+multichaind echain@172.31.33.129:9245
+
+
+giving permissions
+
+ multichain-cli echain grant 113Bva5RLe6po5mYaq2BS1CFeZTgeyUN5RuWAN connect,send,receive
+
+
+issuing
+
+multichain-cli echain issue 18rG3t2YJtE5XgmVJ2KMzrkuEh7R2jX6pmDx72 RPI-01 1 1
+multichain-cli echain issue 18rG3t2YJtE5XgmVJ2KMzrkuEh7R2jX6pmDx72 RPI-02 1 1
+multichain-cli echain issue 18rG3t2YJtE5XgmVJ2KMzrkuEh7R2jX6pmDx72 RPI-03 1 1
+multichain-cli echain issue 18rG3t2YJtE5XgmVJ2KMzrkuEh7R2jX6pmDx72 ARD-01 1 1
+multichain-cli echain issue 18rG3t2YJtE5XgmVJ2KMzrkuEh7R2jX6pmDx72 ARD-02 1 1
+multichain-cli echain issue 18rG3t2YJtE5XgmVJ2KMzrkuEh7R2jX6pmDx72 ARD-03 1 1 
+

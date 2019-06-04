@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Equip-chain</title>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- font family -->
+	<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+	<!-- icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+	<!-- mqtt file -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+
+
+	<style type="text/css">
+		html,body {
+			font-family: 'Quicksand', sans-serif;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3 well">
+				<ul class="nav nav-tabs">
+					
+					<li  class="active"><a data-toggle="tab" href="#data">Login</a></li>
+
+					<li class="data_tabs" style="display: none;"><a data-toggle="tab" href="#action">Dashboard</a></li>
+					<li class="data_tabs" style="display: none;"><a data-toggle="tab" href="#txn">RequestEquipment</a></li>
+
+
+				</ul>
+
+				<div class="tab-content">
+					<div id="data" class="tab-pane fade in active">
+						<h3 class="text-center">Equip-chain</h3>
+						<hr/>
+						<div class="form-group">
+							<label>USER NAME</label>
+							<input type="textbox" id="username" class="form-control"  required autocomplete="off" />
+							<label>PASSWORD</label>
+							<input type="password" id="password" class="form-control"  required autocomplete="off" />
+						</div>
+
+						<button class="btn btn-info" id="data_save">LOGIN</button>
+					</div>
+
+					<div id="txn" class="tab-pane fade in text-left">
+						<h3 class="text-center">Equip-chain</h3>
+						<hr/>
+						<div class="form-group">
+							<label>Sender</label>
+							<input type="textbox" id="sender" class="form-control"  required autocomplete="off" />
+						</div>
+
+						<div class="form-group">
+							<label>Receiver</label>
+							<input type="text" id="receiver" class="form-control" required />
+						</div>
+						<div class="form-group">
+							<label>Asset</label>
+							<select id="assets">
+							</select>	
+						</div>
+						<!-- <div class="form-group">
+							<label>Topic Id</label>
+							<input type="text" id="topic_id" class="form-control" required autocomplete="off" />
+						</div> -->
+						<button class="btn btn-info" id="data_submit">send OTP</button>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<i class="fa fa-pencil fa-2x" data-toggle="modal" data-target="#myModal"></i>
+
+						
+					</div>
+
+					<div id="action" class="tab-pane fade text-center">					
+						<!-- NEED TO ADD SOME LINES TO SHOW THE DATA -->
+						<div class="middle">						
+							  <h2>ASSET LEFT IN THUB</h2>
+							  <button class="pull-right btn btn-info" id="send_msg">Update</button>
+							  <p>at T-HUB</p>            
+								  <table class="table" id="mywallet">
+								    <thead>
+								      <tr>
+								        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asset Name</th>
+								        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asset With(current)</th>
+								        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quantity</th>
+								        <th>&nbsp;&nbsp;&nbsp;On(date)</th>
+								      </tr>
+								    </thead>
+								    <tbody>
+								      
+								      <tr id="mywal0"></tr>
+
+								    </tbody>
+								  </table>
+								  
+							  <h2>ASSET IN MY WALLET</h2>
+							  <p>by T-HUB</p>            
+								  <table class="table" id="thubwallet">
+								  	<thead>
+								      <tr>  
+								        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asset Name</th>
+								        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quantity Left</th>
+								      </tr>
+								    </thead>
+								    <tbody>
+								      
+								      <tr id="twal0"></tr>
+								    </tbody>  
+								  </table>
+								  	
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Complete Transaction</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label>ENTER  OTP</label>
+							<input type="text" class="form-control" value="" id="button_name" autocomplete="off" required />
+						</div>
+						
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-info" id="add_button">Submit</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- /Modal -->
+
+	</div>
+
+	<script>
+		$(document).ready(function(){
+
+
+				var port = 3033;
+				var address = "18.232.46.180";
+				var topic;
+				var client;
+				var sender;
+				var receiver;
+				var asset;
+				var pubtopic = "echain-3892-server-listener";
+				var subtopic = "echain-3892-server-sender";
+				var otp;
+				var i=0;
+		        var dropdown=["RPI-12","RPI-34"];
+		        var username;
+		        var password;
+		        var ast_bal;
+
+
+		       mqttConnect(address,port,username);
+		       
+		       var dropdown = "<option>select asset</option>"
+		        
+
+				function mqttConnect(address,port,username)
+
+				{
+					var wsbroker = address; 
+					var wsport = port;
+					// var client = username;
+
+					client = new Paho.MQTT.Client(wsbroker, wsport,
+					"equipchain"+ parseInt(Math.random() * 100, 10));                
+					
+					client.onConnectionLost = function (responseObject) {
+					console.log("connection lost: " + responseObject.errorMessage);
+					}; 
+					var options = 
+						{
+							timeout: 3,
+							onSuccess: function () {
+							console.log("mqtt connected");
+							client.subscribe(subtopic, {qos: 2});
+							alert("WELCOME TO EQUIPCHAIN");
+							},
+
+							onFailure: function (message) {
+							console.log(wsbroker,wsport,client);
+							console.log("Connection failed: " + message.errorMessage);
+							alert("FAILED TO CONNECT");
+							alert ("TRY AGAIN");
+							}
+							
+						};
+					client.onMessageArrived = function (message) {
+			      		console.log(message.destinationName, ' -- ', message.payloadString);
+				      	var obj = JSON.parse(message.payloadString);
+				      	if (obj["type"] == "RESP"){
+				      		if (obj["op"] == "LOGIN")
+				      		{
+				      			if(obj["details"]["returnVal"] == 0)
+				      			{
+				      				console.log("success");
+				      				alert("LOGIN SUCCESSFUL");
+				      				$(".data_tabs").css("display","block");
+				      				if (obj["payload"].length>0)
+				      				{
+				      					for (var a=0;a<obj["payload"].length;a++)
+				      					{
+					      					dropdown+="<option>"+obj["payload"][a]["name"]+"</option>";
+
+					      					$('#twal'+a).html("<td>"+ obj["payload"][a]["name"] +"</td><td>"+ obj["payload"][a]["qty"] +"</td>");
+											$('#thubwallet').append('<tr id="twal'+(a+1)+'"></tr>');
+						        		}
+							        
+				      				$("#assets").append(dropdown);
+
+				      				}
+				      					
+				      			}
+				      				
+
+				      			else{
+				      				console.log("failure");
+				      				alert("INCORRECT PASSWORD OR USERNAME")
+                                    
+
+				      			}
+
+				      		}
+				      		else if (obj["op"] == "OTP")
+				      		{
+				      			otp = obj["details"]["otp"]
+				      			console.log(otp);
+				      		}
+
+				      		else if (obj["op"] == "AST-BAL")
+				      		{	
+				      			ast_bal = obj["details"]["ast-bal"]
+				      			console.log(ast_bal);								
+								var len = Object.keys(ast_bal).length;		
+								$('#thubwallet > tbody > tr').remove();
+								$('#mywallet > tbody > tr').remove();
+
+								$('#mywallet > tbody').html('<tr id="mywal0"></tr>');
+								$('#thubwallet > tbody').html('<tr id="twal0"></tr>');
+
+								// for (var k=0;k<len;k++)
+								// {
+								// 	$('#mywal'+k).html("<td>"+ ast_bal[k+1]['asset'] +"</td><td>"+ast_bal[k+1]['user']+"</td><td>1</td><td>NA</td>");
+								// 	$('#mywallet').append('<tr id="mywal'+(k+1)+'"></tr>');
+
+									
+								// };
+
+								var ast_bal = obj["details"]["ast-bal"]	
+								if (ast_bal.length>0)
+				      				{
+				      					for (var a=0;a<ast_bal.length;a++)
+				      					{
+					      					$('#twal'+a).html("<td>"+ ast_bal[a]["name"] +"</td><td>"+ ast_bal[a]["qty"] +"</td>");
+											$('#thubwallet').append('<tr id="twal'+(a+1)+'"></tr>');
+						        		}
+							
+							
+						        	}	
+				      		}
+
+
+
+
+
+
+				      	}
+
+				      	
+						
+						
+
+					};	       
+
+					client.connect(options);  
+		        }
+
+		        function mqttSend(value)
+		        {
+		        	    var myData=value;		
+				        myData = JSON.stringify(myData);
+				        message = new Paho.MQTT.Message(myData);
+				        message.destinationName = pubtopic;
+				        console.log(myData);
+				        client.send(message);
+
+		        }
+
+
+		       
+
+		    $("#data_save").click(function(){
+				// // Data
+				username = $("#username").val();
+				password = $("#password").val();
+				
+		    	 
+				console.log("data_save clicked");
+					
+				var loginMessage = {"sender":"APP","type":"REQ","op":"LOGIN","details":{"username":username,"password":password}};	
+
+				mqttSend(loginMessage);
+
+
+				
+				
+			});
+
+
+
+			$("#data_submit").click(function(){
+				console.log("data_submit clicked");				
+				receiver = $("#receiver").val();
+				sender = $("#sender").val();
+				asset = $("#assets").val();
+				var otpMessage = {"sender":"APP","type":"REQ","op":"OTP","details":{"receiver":receiver,"sender":sender,"asset":asset}};
+				console.log(otpMessage);
+				mqttSend(otpMessage);	
+				
+			}); 
+    
+
+			$("#add_button").click(function(){
+				console.log("add_button");
+				// var name 	= $("#button_name").val();
+				
+					$('[data-dismiss="modal"]').click();
+					
+				// 	$("#button_name").val('');
+
+				var otpentered = $("#button_name").val();
+
+				if (otpentered==otp){
+					alert("same");
+					// send a message to server to do the blockchain operation sendasset
+					var snd_astMessage = {"sender":"APP","type":"REQ","op":"SND-AST","details":{"receiver":receiver,"sender":sender,"asset":asset}};				
+					mqttSend(snd_astMessage);	
+				
+
+				}
+
+
+				
+				})
+
+			 $("#send_msg").click(function(){
+					
+				var ast_balMessage = {"sender":"APP","type":"REQ","op":"AST-BAL","details":{}};
+
+				mqttSend(ast_balMessage);
+
+
+				
+				
+			});
+
+			});
+
+			
+
+
+			
+
+	</script>
+</body>
+</html>
