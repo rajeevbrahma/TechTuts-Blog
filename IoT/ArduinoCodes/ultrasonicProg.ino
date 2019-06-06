@@ -24,6 +24,7 @@ void loop()
   // trigger process
   digitalWrite(trigPin,1);
   delayMicroseconds(10);
+  digitalWrite(trigPin,0);
   
   // listening process
   duration = pulseIn(echoPin,HIGH);
