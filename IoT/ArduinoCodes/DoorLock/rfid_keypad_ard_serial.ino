@@ -1,195 +1,97 @@
-#include <SPI.h>
-#include <MFRC522.h>
-#include <Key.h>
-#include <Keypad.h>
-
-#include <SoftwareSerial.h>
-SoftwareSerial soft_serial(6, 5);
-
-#define RST_PIN         9
-#define SS_PIN          10
-MFRC522 mfrc522(SS_PIN, RST_PIN);
-
-const byte ROWS = 4; //four rows
-const byte COLS = 4; //three columns
-
-bool keypadEnable = false; //
-bool rfidEnable = true; //
-
-String passwordActual = "";
-String passwordTyped = "";
-String rfidTagID_Detected = "";
-String rfidTagID_Recieved = "";
-bool gotComma = false;
 
 
-int tempStringLength;
-char tempBuf[100];
-String tempStr;
+/*
 
+  Automated DoorLock Arduino code version 1.0
 
-char key;
-
-char keys[ROWS][COLS] = {
-
-  {'1', '2', '3', 'A'},
-
-  {'4', '5', '6', 'B' },
-
-  {'7', '8', '9', 'C'},
-
-  {'*', '0', '#', 'D'}
-
-};
-
-byte rowPins[ROWS] = {3, 2, A5, A4}; //connect to the row pinouts of the keypad
-byte colPins[COLS] = {A3, A2, A1, A0}; //connect to the column pinouts of the keypad
-
-Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
-
-void setup()
-{
-  Serial.begin(9600);
-  soft_serial.begin(9600);
-  SPI.begin();
-  mfrc522.PCD_Init();
-}
-
-void loop()
-{
-
-  if (rfidEnable == true)
-  {
-    RfidScan();
-    Serial.println("RFID SCANNING....");
-  }
-
-  else
-  {
-
-    if (soft_serial.available() > 0)
-    {
-
-      String node_return = soft_serial.readString();
-      
-      if (node_return != "") {
-        Serial.print("Serial Received from Node mcu --- ");
-        Serial.println(node_return);
-        
-          if (node_return[0] == '0')
-          {
-            Serial.println(node_return);
-        
-            tempStr = "rfidalert";
-            tempStringLength = tempStr.length() + 1;
-            tempStr.toCharArray(tempBuf, tempStringLength);
-            soft_serial.write(tempBuf, tempStringLength);
-          }
-          else
-          {
-            keypadEnable = true;
-            Serial.println("KEYPAD ENABLED..");
-            for (int j = 0; j < node_return.length(); j++) {
-
-             Serial.println(node_return[j]);
-             Serial.println((char)node_return[j]);
-              if (node_return[j] == ',') {
-                gotComma = true;
-              }
-              else if (node_return[j] != ',' && gotComma == false) {
-                rfidTagID_Recieved += node_return[j];
-              }
-              else if (node_return[j] != ',' && gotComma == true) {
-                passwordActual += node_return[j];
-              }
-            }
-            gotComma = false;
-          }
-
-          Serial.print("PASSWORD ACTUAL - ");Serial.print(passwordActual); 
+  version features : 
           
-      }
+
+*/
+
+// ***************** Libraries ********************* // 
+#include <deprecated.h>
+#include <MFRC522.h>
+#include <MFRC522Extended.h>
+#include <require_cpp11.h>                    //  MFRC522 LIBRARY FOR RFID MODULE
+
+#include <Key.h>
+#include <Keypad.h>                           // KEYPAD MODULE LIBRARY
 
 
-    }
+
+// **********  VARIABLES & GLOBAL INTIALIZATIONS  ****** //
+
+const byte ROWS = 4;                                                                // NUMBER OF ROWS IN KEYPAD
+const byte COLS = 4;                                                                // NUMBER OF COLUMNS IN KEYPAD
+
+char keypadKeys[ROWS][COLS] = {                                                     // VALUE DECLARATION FOR THE KEYS IN THE KEYPAD
+      {'z','2','3','A'},
+      {'y','5','6','B'},
+      {'f','8','9','C'},
+      {'*','0','#','D'}
+  };
+byte rowPins[ROWS] = {3,2,A5,A4};                                                   // INTIALISING ROW PINS
+byte colPins[COLS] = {A3,A2,A1,A0};                                                 // INTIALISING COLUMN PINS      
+
+Keypad otpPad = Keypad (makeKeymap(keypadKeys),rowPins,colPins,ROWS,COLS);          // KEYPAD MAPPING WITH THE VALUES AND PIN NUMBERS 
 
 
+#define RST_PIN         9                                                           // RESET PIN
+#define SS_PIN          10                                                          // SERIAL CLOCK
+MFRC522 mfrc522(SS_PIN, RST_PIN);                                                   // MFRC VARIABLE INTIALISATION
 
+String tagID_detected ;                                                             // VARIABLE TO STORE RFID TAG ID.
 
+bool rfid_keypad = true;                                                            // true - ENABLE RFID, false - ENABLE KEYPAD
 
-  }
+const int detectedLED   =  4; 
+const int processLED    =  5;
+const int accessLED     =  6;
+const int deniedLED     =  7;
 
-  key = keypad.getKey();
+const int doorLockRelay =  8;
 
-  if (key != NO_KEY && keypadEnable == true && rfidEnable == false)
-  {
-    if (passwordTyped.length() <= 3)
-    {
-      passwordTyped += key;
-     
-    }
-    else{
-      keypadEnable = false;
-      Serial.print("KEYPAD DISABLED..");
-      }
+char pressedKey ;
+String enteredOTP ;
+String receivedOTP ;
 
-     Serial.print(passwordTyped);
-     Serial.print(passwordTyped.length());
-  }
   
-  if (keypadEnable == true && rfidEnable == false && passwordTyped.length() == 3)
-  {
-    if (passwordTyped == passwordActual)
-    {
-      // turn on the relay to open the door
-      keypadEnable == false;
-      rfidEnable == true;
-      passwordTyped = "";
-      Serial.println("OPEN THE DOOR");
 
-    }
-    else
-    {
-      tempStr = "passwordincorrect";
-      tempStringLength = tempStr.length() + 1;
-      tempStr.toCharArray(tempBuf, tempStringLength);
-      soft_serial.write(tempBuf, tempStringLength);
+String nodeMessage;
 
-      keypadEnable == false;
-      rfidEnable == true;
-      passwordTyped = "";
-
-      Serial.println("PASSWORD INCORRECT,SCANNING AGAIN");
-
-
-    }
-  }
-
-}
 
 void dump_byte_array(byte *buffer, byte bufferSize)
 {
-  Serial.print("TAG ID is .....");
+  
   for (byte i = 0; i < bufferSize; i++)
   {
     //    Serial.print(buffer[i]);
-    rfidTagID_Detected += (buffer[i]);
+    tagID_detected += buffer[i];
 
   }
 
-  Serial.print(rfidTagID_Detected);
 
-  tempStr = String(rfidTagID_Detected);
-  tempStringLength = tempStr.length() + 1;
-  tempStr.toCharArray(tempBuf, tempStringLength);
-  soft_serial.write(tempBuf, tempStringLength);
+  // -------------------------
+ 
+  /*
+   SEND THIS DETECTED TAG ID TO THE NODE MCU THROUGH SERIAL COMMUNICATION.
 
-  rfidEnable = false; // switching the device into enter password mode
+  */
+  Serial.print(tagID_detected);
+  delay(500);
+  tagID_detected = "";
+   
+ 
+ //  --------------------------
 
+  rfid_keypad = false;
+
+  
 }
-
 void RfidScan()
 {
+//  Serial.println("SCANNING");
   if ( ! mfrc522.PICC_IsNewCardPresent())
     return;
   if ( ! mfrc522.PICC_ReadCardSerial())
@@ -200,3 +102,78 @@ void RfidScan()
 }
 
 
+void KeyPress(){
+  pressedKey = otpPad.getKey();
+  
+  if (enteredOTP.length()<4){
+    enteredOTP+=pressedKey;
+    }
+  else{
+    enteredOTP = "";
+    return;
+    }  
+  
+  }
+
+
+
+void setup() {
+  
+  Serial.begin(9600);                                                               // COMMUNICATION BETWEEN ARDUINO UNO AND NODE MCU AND PC
+
+  SPI.begin();                                                                     // RFID TO UNO COMMUNICATION BEGIN
+  mfrc522.PCD_Init();                                                              // RFID MODULE WILL START READING
+
+
+}
+
+void loop() {
+
+  if (Serial.available() && rfid_keypad == false){
+    nodeMessage = Serial.readString();
+
+    if (nodeMessage != ""){
+      // extract the otp received and store in the variable.
+//      Serial.println(nodeMessage);
+      receivedOTP = nodeMessage;
+      }
+    
+    }
+
+  if (enteredOTP.length() == 4){
+    
+    // compare entered OTP with received OTP and if equal open lock. 
+    if (receivedOTP == enteredOTP){
+    // TURN ON THE RELAY.
+    digitalWrite(doorLockRelay,HIGH);
+    delay(10000);
+    // TURN OFF THE RELAY.
+    digitalWrite(doorLockRelay,LOW);      
+      }
+    else{
+      
+      
+      }  
+
+
+      
+    }
+
+
+    
+  if (rfid_keypad == true){
+      RfidScan();  
+    }
+  else if (rfid_keypad == false){
+      KeyPress();
+    }  
+  
+
+  delay(500);
+
+
+
+
+
+  
+}
