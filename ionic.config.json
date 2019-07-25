@@ -1,0 +1,8 @@
+{
+  "name": "conf-firebase-angular",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}
